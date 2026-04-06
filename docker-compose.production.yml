@@ -8,7 +8,6 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    build: ./backend
     image: leeevs/kittygram_backend
     container_name: backend
     env_file:
@@ -20,7 +19,6 @@ services:
       - media:/app/media
 
   frontend:
-    build: ./frontend
     image: leeevs/kittygram_frontend
     container_name: frontend
     command: sh -c "cp -r /app/build/. /static/ && http-server -p 8000 /app/build"
@@ -28,7 +26,6 @@ services:
       - static:/static
 
   gateway:
-    build: ./nginx
     image: leeevs/kittygram_gateway
     container_name: gateway
     depends_on:
