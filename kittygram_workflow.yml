@@ -106,25 +106,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Create .env from secret
-        run: |
-          cat << 'EOF' > .env
-          ${{ secrets.PROD_ENV_FILE }}
-          EOF
-
-      - name: Copy files to server
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "docker-compose.production.yml,.env"
-          target: "/home/${{ secrets.USER }}/kittygram"
-          overwrite: true
-
       - name: Deploy on server
         uses: appleboy/ssh-action@v1
         with:
@@ -132,6 +113,11 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            mkdir -p /home/${{ secrets.USER }}/kittygram
+            cat > /home/${{ secrets.USER }}/kittygram/.env <<'EOF'
+            ${{ secrets.PROD_ENV_FILE }}
+            EOF
+
             cd /home/${{ secrets.USER }}/kittygram
             sudo docker compose -f docker-compose.production.yml pull
             sudo docker compose -f docker-compose.production.yml up -d
