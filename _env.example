@@ -1,5 +1,5 @@
 POSTGRES_DB=kittygram
 POSTGRES_USER=kittygram_user
-POSTGRES_PASSWORD=kittygram_password
+POSTGRES_PASSWORD=replace_me
 DB_HOST=postgres
 DB_PORT=5432
