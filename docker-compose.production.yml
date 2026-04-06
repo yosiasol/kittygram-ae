@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    env_file:
+      - .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    image: yosiasol/kittygram_backend
+    container_name: backend
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - static:/app/collected_static
+      - media:/app/media
+
+  frontend:
+    build: ./frontend
+    image: yosiasol/kittygram_frontend
+    container_name: frontend
+    command: sh -c "cp -r /app/build/. /static/ && http-server -p 8000 /app/build"
+    volumes:
+      - static:/static
+
+  gateway:
+    build: ./nginx
+    image: yosiasol/kittygram_gateway
+    container_name: gateway
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "9000:80"
+    volumes:
+      - static:/static
+      - media:/media
+
+volumes:
+  pg_data:
+  static:
+  media:
