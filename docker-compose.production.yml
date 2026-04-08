@@ -21,7 +21,7 @@ services:
   frontend:
     image: leeevs/kittygram_frontend
     container_name: frontend
-    command: sh -c "cp -r /app/build/. /static/ && http-server -p 8000 /app/build"
+    command: sh -c "cp -r /app/build/. /static/"
     volumes:
       - static:/static
 
@@ -30,7 +30,6 @@ services:
     container_name: gateway
     depends_on:
       - backend
-      - frontend
     ports:
       - "9000:80"
     volumes:
